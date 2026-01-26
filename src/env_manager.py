@@ -39,7 +39,7 @@ def get_position() -> Tuple[float, float]:
     
     return (latitutde, longtitude)
 
-def get_distance() -> float:
+def get_radius() -> float:
     """
     Fetches the radius in meters from the current position specified in the .env file.
 
@@ -49,8 +49,8 @@ def get_distance() -> float:
         float: 
     """
     load_dotenv()
-    distance = os.getenv('DIST')
-    if not distance:
-        raise ValueError('DIST is not set in the .env file.')
+    radius = os.getenv('RAD')
+    if not radius:
+        raise ValueError('RAD is not set in the .env file.')
     
-    return distance
+    return radius

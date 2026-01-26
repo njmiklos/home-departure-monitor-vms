@@ -1,7 +1,5 @@
 """
-This script provides file handling utilities for reading, writing, and managing data files such as CSV and JSON. 
-
-Refer to `README.md` for full setup, usage instructions, and formatting requirements.
+This script provides file handling utilities for reading, writing, and managing data files. 
 """
 import pandas as pd
 from pathlib import Path
@@ -18,4 +16,4 @@ def read_csv_to_dataframe(path_file: Path) -> pd.DataFrame:
         pd.DataFrame: A DataFrame containing the data from the CSV file.
     """
     df = pd.read_csv(path_file)
-    return df 
+    return df
