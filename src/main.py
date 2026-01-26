@@ -4,6 +4,9 @@ from typing import List
 
 
 class Connection:
+    '''
+    An object with information about a single connection at a single stop.
+    '''
     def __init__(self, stop_id, stop_name, departures):
         self.stop_id: str = stop_id
         self.location: str = stop_name
@@ -11,21 +14,31 @@ class Connection:
         self.departures = departures # panda df
 
 class Area:
+    '''
+    An object with information about an area surrounding the position of the specified latitude and longtitude within the specified distance.
+    '''
     def __init__(self, latitude = 0.0, longtitude = 0.0, distance = 0.0):
         self.latitude: float = latitude
         self.longtitude: float = longtitude
-        self.distance: float = distance # Radius in m from position to find stops
+        self.distance: float = distance
 
-        self.connections: List[Connection] = []
+        #self.connections: List[Connection] = []
     
     def set_area(self) -> None:
-        self.latitude, self.latitude = get_position()
+        self.latitude, self.longtitude = get_position()
         self.distance = get_distance()
     
     def set_connections(self) -> None:
         self.connections = self.get_nearby_connections()
 
     def get_nearby_connections(self) -> List[Connection]:
+        '''
+        Returns a list of 
+        
+        :param self: Description
+        :return: Description
+        :rtype: List[Connection]
+        '''
         intput_dir = get_path('INPUT_PATH') 
         input_file = intput_dir / 'stops.txt'
         df = read_csv_to_dataframe(input_file)
@@ -33,4 +46,10 @@ class Area:
 
 
 if __name__ == '__main__':
-    intput_filename = ""
+    area = Area()
+    area.set_area()
+    latitude, longtitude = get_position()
+    assert area.latitude == latitude
+    assert area.longtitude == longtitude
+    distance = get_distance()
+    assert area.distance == distance
