@@ -9,7 +9,7 @@ class Connection:
     """
     Represents a single transport connection at a specific stop.
     """
-    def __init__(self, stop_id: str, stop_name: str, departures: pd.DataFrame):
+    def __init__(self, stop_id: str, stop_name: str, latitude: float, longtitude: float):
         """
         Initialize a Connection instance.
 
@@ -17,15 +17,33 @@ class Connection:
         :type stop_id: str
         :param stop_name: Human-readable name of the stop from the VMS's GTFS-compatible data.
         :type stop_name: str
+        :param latitude: Latitude of the selected position.
+        :type latitude: float
+        :param longtitude: Longitude of the selected position.
+        :type longtitude: float
+
+        :param route_short_name: #TODO
+        :type route_short_name: str
+        :param route_long_name: #TODO
+        :type route_long_name: str
+
         :param departures: Departure information for the stop from the VMS's GTFS-compatible data.
         :type departures: pd.DataFrame
         """
+        # given by the Area class based on stops.txt
         self.stop_id: str = stop_id
-        self.location: str = stop_name
-        self.departures: pd.DataFrame = departures
-    
-    def set_connection(self):
-        pass
+        self.stop_name: str = stop_name
+        self.latitude: float = latitude
+        self.longtitude: float = longtitude
+
+        # TODO with https://gtfs.org/documentation/schedule/examples/routes-stops-trips/
+        
+        # routes.txt
+        self.route_short_name: str = self.set_short_name()
+        self.route_long_name: str = self.set_long_name()
+
+        # stop_times.txt
+        self.departures: pd.DataFrame = self.set_departures()
 
 class Area:
     """
