@@ -1,7 +1,7 @@
 import pandas as pd
 from typing import List
 
-from env_manager import get_position, get_radius, get_path
+from env_manager import get_latitutde, get_longtitude, get_radius, get_path
 from file_handler import read_csv_to_dataframe
 
 
@@ -23,6 +23,9 @@ class Connection:
         self.stop_id: str = stop_id
         self.location: str = stop_name
         self.departures: pd.DataFrame = departures
+    
+    def set_connection(self):
+        pass
 
 class Area:
     """
@@ -31,9 +34,12 @@ class Area:
 
     The Area object can be populated with nearby transport connections.
     """
-    def __init__(self, latitude: float = 0.0, longtitude: float = 0.0, radius: float = 0.0):
+    def __init__(self):
         """
-        Initialize an Area instance.
+        Initialize an Area instance and populate the area's latitude, longitude, and radius values.
+
+        The values are retrieved from environment configuration using
+        helper functions.
 
         :param latitude: Latitude of the selected position.
         :type latitude: float
@@ -42,21 +48,11 @@ class Area:
         :param radius: Radius of the area around the selected position.
         :type radius: float
         """
-        self.latitude: float = latitude
-        self.longtitude: float = longtitude
-        self.radius: float = radius
+        self.latitude: float = get_latitutde()
+        self.longtitude: float = get_longtitude()
+        self.radius: float = get_radius()
 
         self.connections: List[Connection] = []
-    
-    def set_area(self) -> None:
-        """
-        Populate the area's latitude, longitude, and radius values.
-
-        The values are retrieved from environment configuration using
-        helper functions.
-        """
-        self.latitude, self.longtitude = get_position()
-        self.radius = get_radius()
     
     def set_connections(self) -> None:
         """
@@ -84,9 +80,9 @@ class Area:
 
 if __name__ == '__main__':
     area = Area()
-    area.set_area()
 
-    latitude, longtitude = get_position()
+    latitude = get_latitutde()
+    longtitude = get_longtitude()
     assert area.latitude == latitude
     assert area.longtitude == longtitude
 
