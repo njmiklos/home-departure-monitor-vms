@@ -1,15 +1,49 @@
 # Home Departure Monitor for Verkehrsverbund Mittelsachsen
 > 🚧 **Project status:** Early development
-## Description
+## Project Description
 The idea is to create Raspberry Pi–powered home display that shows the next departures for selected public transport stops in the VMS ([Verkehrsverbund Mittelsachsen](https://www.vms.de/)) region. The monitor should render a departure-board style view of planned and actual departures of nearby stops.
 
 My motivation is to create a small but complete IT project that combines backend systems and a user-facing output as a learning exercise and to demonstrate real-world, end-to-end problem solving.
-## High-Level Flow
-1. Fetch & cache the static schedule data
-2. Parse the cached GTFS tables (stops, trips, stop_times, calendar)
-3. Find "next departures" for configured stop(s)
-4. Render the screen output (e-ink or LCD)
-5. Refresh the output on a defined interval by repeating the steps 1-5.
+## Project Overview
+### System Overview
+1. Fetch & cache the static schedule data.
+2. Find "next departures" for configured stop(s) with the cached GTFS data.
+3. Render the screen output (e-ink or LCD).
+4. Refresh the output on a defined interval by repeating the steps 1-3.
+### GTFS Data Structure
+The GTFS format is composed of multiple text files, each describing public transport data at a different level of abstraction. These can be joined using shared columns and identifiers.
+
+In this project, I focused on the following core files:
+- `stops.txt`: names of and geographic information about individual stops
+- `stop_times.txt`: arrival and departure times for trips at specific stops
+- `trips.txt`: groupings of stop sequences operated as a single trip
+- `routes.txt`: high-level route information presented to passengers
+
+These files are connected through common identifiers as illustrated below:
+```
++------------------+        +---------------------+        +------------------+        +------------------+
+|    stops.txt     |        |   stop_times.txt    |        |    trips.txt     |        |   routes.txt     |
++------------------+        +---------------------+        +------------------+        +------------------+
+| stop_id          |<------>| stop_id             |        | route_id         |<------>| route_id         |
+| stop_name        |        | stop_sequence       |        | service_id       |        | agency_id        |
+| stop_lat         |        | stop_headsign       |        | trip_headsign    |        | route_short_name |
+| stop_lon         |        | pickup_type         |        | direction_id     |        | route_long_name  |
+|                  |        | drop_off_type       |        | block_id         |        | route_type       |
+|                  |        | trip_id             |<------>| trip_id          |        |                  |
+|                  |        | arrival_time        |        |                  |        |                  |
+|                  |        | departure_time      |        |                  |        |                  |
++------------------+        +---------------------+        +------------------+        +------------------+
+```
+### Finding Upcoming Departures
+To list X upcoming departures within a time window of Y minutes from a given location, the following steps are performed:
+
+1. Identify stops close to the selected geographic position using `stop_lat` and `stop_lon` in `stops.txt`. Collect the `stop_id` values.
+2. Use `stop_id`s to query `stop_times.txt` to get arrivals within the next Y minutes. Collect the `trip_id` values of the arrivals.
+3. Use `trip_id`s to query `trips.txt` to get the trip information. Collect the `route_id` values of the trips.
+4. Use `route_id` to query `routes.txt` to get passenger-facing route information.
+5. Lastly, optionally confirm that each trip operates on the selected date using:
+   - `calendar.txt` (regular weekday schedules and start/end dates)
+   - `calendar_dates.txt` (service exceptions such as holidays or cancellations)
 # Usage Instructions
 ## 1. Download this Repository
 - Follow the [GitHub documentation](https://docs.github.com/en/get-started/start-your-journey/downloading-files-from-github)
