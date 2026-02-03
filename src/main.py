@@ -9,13 +9,15 @@ class Connection:
     """
     Represents a single transport connection at a Stop instance.
     """
-    def __init__(self, departure_time):
+    def __init__(self, trip_id, departure_time):
         """
-        Initialize a Connection instance and populate its departure time, names and type of vehicle.
+        Initialize a Connection instance and populate its ID, departure time, names and type of vehicle.
         The values are retrieved from routes.txt from the VMS's GTFS-compatible data, but since 
         there is no direct connection between stop_times.txt and routes.txt,
         the file trips.txt is leveraged as a connection between them.
 
+        :param trip_id: ID of the Connection instance, given by the Stop instance.
+        :type trip_id: str
         :param departure_time: Time of departure of the Connection instance, given by the Stop instance.
         :type departure_time: str
 
@@ -26,6 +28,7 @@ class Connection:
         :param vehicle: Type of vehicle (e.g., bus, tram) mapped based on `route_type` code.
         :type vehicle: str
         """
+        self.trip_id: str = trip_id
         self.departure_time: str = departure_time
 
         self.connection_id: str = self.set_connection_id()
@@ -42,7 +45,7 @@ class Connection:
     def set_long_name(self) -> None:
         pass
 
-    def map_long_name(self, route_type: str):
+    def map_route_type(self, route_type: str):
         """
         Return type of vehicle (e.g., bus, tram) available in the area, based on `route_type` code.
         More types: https://gtfs.org/documentation/schedule/reference/#routestxt 
@@ -64,7 +67,7 @@ class Connection:
         input_file = input_dir / 'routes.txt'
         df = read_csv_to_dataframe(input_file)
         route_type_col = df["route_type"]
-        route_type = route_type_col.get(route_id, default='???')
+        route_type = self.map_route_type(route_type_col.get(route_id, default='???'))
         return route_type
 
 
@@ -147,6 +150,7 @@ class Area:
 
         pass
 
+# TODO make sure files are loaded once and cached, not loaded every time
 
 if __name__ == '__main__':
     '''
