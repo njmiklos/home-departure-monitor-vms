@@ -68,15 +68,19 @@ BASE_PATH=/your-path-to-repository/home-departure-monitor-vms/
 INPUT_PATH=/your-path-to-repository/home-departure-monitor-vms/input/
 OUTPUT_PATH=/your-path-to-repository/home-departure-monitor-vms/output/
 
-# Selected Stops
-STOP_1=...
-STOP_2=...
+# Your Location and Timeframe
+LATITUDE=50.838054
+LONGITUDE=12.9412469
+RADIUS=500
+TIMEFRAME=10
 ```
 ### Explanation of Variables in the .env File
 - `BASE_PATH`: Directory containing all Python files for this project.
 - `INPUT_PATH`: Directory containing cached schedules. To explain, public transportation schedules are saved to static CSV files in an open-source, international format [GTFS](https://gtfs.org/). The schedules of VMS are published on their website in the [download section](https://www.vms.de/vms/service/downloads/), and updated weekly.
 - `OUTPUT_PATH`: Directory for storing all output files, if necessary.
-- `STOP_x`: The variable referring to the stops of your interest, where x is an ordinal number. Select as many stops as you wish by adding more than listed.
+- `LATITUDE` and `LONGITUDE`: The latitude and longitude of your location.
+- `RADIUS`: The radius, in meters, around your location. Together with `LATITUDE` and `LONGITUDE`, it defines the area in which available stops are searched.
+- `TIMEFRAME`: The time window, in minutes, within which departures are searched.
 ## 4. Run Scripts
 > ⚠️ **Note:** If you work with a virtual environment, make sure that it is active.
 1. Write your own `main.py` and import necessary scripts or adjust an existing main code accordingly. You can add or remove variables in the *.env file.

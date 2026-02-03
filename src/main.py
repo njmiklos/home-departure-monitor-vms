@@ -1,7 +1,7 @@
 import pandas as pd
 from typing import List
 
-from env_manager import get_latitutde, get_longtitude, get_radius, get_path, get_timeframe
+from env_manager import get_latitutde, get_longitude, get_radius, get_path, get_timeframe
 from file_handler import read_csv_to_dataframe
 
 
@@ -72,7 +72,7 @@ class Stop:
     """
     Represents a single stop in a public transport in an Area instance.
     """
-    def __init__(self, stop_id: str, stop_name: str, latitude: float, longtitude: float):
+    def __init__(self, stop_id: str, stop_name: str, latitude: float, longitude: float):
         """
         Initialize a Stop instance and populate its ID, name and geographical location.
         The values are retrieved from stops.txt from the VMS's GTFS-compatible data.
@@ -86,8 +86,8 @@ class Stop:
         :type stop_name: str
         :param latitude: Latitude of the selected position.
         :type latitude: float
-        :param longtitude: Longitude of the selected position.
-        :type longtitude: float
+        :param longitude: Longitude of the selected position.
+        :type longitude: float
 
         :param timeframe: Time in minutes defined by the user where transport data is retrieved from.
             The values are retrieved from *.env defined by the user.
@@ -99,7 +99,7 @@ class Stop:
         self.stop_id: str = stop_id
         self.stop_name: str = stop_name
         self.latitude: float = latitude
-        self.longtitude: float = longtitude
+        self.longitude: float = longitude
 
         self.timeframe: int = get_timeframe()
 
@@ -120,8 +120,8 @@ class Area:
 
         :param latitude: Latitude of the selected position.
         :type latitude: float
-        :param longtitude: Longitude of the selected position.
-        :type longtitude: float
+        :param longitude: Longitude of the selected position.
+        :type longitude: float
         :param radius: Radius of interest defined in meters around the selected position.
         :type radius: float
 
@@ -129,7 +129,7 @@ class Area:
         :type stops: List[Stop]
         """
         self.latitude: float = get_latitutde()
-        self.longtitude: float = get_longtitude()
+        self.longitude: float = get_longitude()
         self.radius: float = get_radius()
 
         self.stops: List[Stop] = self.set_stops()
@@ -142,8 +142,8 @@ class Area:
         input_file = input_dir / 'stops.txt'
         df = read_csv_to_dataframe(input_file)
 
-        # For every self.latitude + self.longtitude within self.radius
-        #   Add a stop: Stop(stop_id, stop_name, stop_latitude, stop_longtitude)
+        # For every self.latitude + self.longitude within self.radius
+        #   Add a stop: Stop(stop_id, stop_name, stop_latitude, longitude)
 
         pass
 
@@ -153,9 +153,9 @@ if __name__ == '__main__':
     area = Area()
 
     latitude = get_latitutde()
-    longtitude = get_longtitude()
+    longitude = get_longitude()
     assert area.latitude == latitude
-    assert area.longtitude == longtitude
+    assert area.longitude == longitude
 
     radius = get_radius()
     assert area.radius == radius

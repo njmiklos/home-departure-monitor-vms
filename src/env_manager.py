@@ -19,18 +19,18 @@ def get_path(var_name: str) -> Path:
         raise ValueError(f'{var_name} is not set in the .env file.')
     return Path(value)
 
-def get_longtitude() -> float:
+def get_longitude() -> float:
     """
-    Fetches the longtitude of the current position specified in the .env file.
+    Fetches the longitude of the current position specified in the .env file.
 
     Raises a ValueError if it is not defined in the .env file.
     """
     load_dotenv() 
-    longtitude = os.getenv('LONGTITUDE')
-    if not longtitude:
-        raise ValueError('LONGTITUDE is not set in the .env file.')
+    longitude = os.getenv('LONGITUDE')
+    if not longitude:
+        raise ValueError('LONGITUDE is not set in the .env file.')
     
-    return longtitude
+    return longitude
 
 def get_latitutde() -> float:
     """
