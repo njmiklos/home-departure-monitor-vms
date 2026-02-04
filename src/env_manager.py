@@ -5,12 +5,15 @@ from pathlib import Path
 
 def get_path(var_name: str) -> Path:
     """
-    Fetches the directory path of the specified variable from the .env file.
+    Retrieve a directory path from the .env file and return it as a Path object.
 
-    Raises a ValueError if it is not defined in the .env file.
+    :param var_name: Name of the environment variable containing a filesystem path.
+    :type var_name: str
 
-    Returns:
-        Path: The path of the specified variable.
+    :raises ValueError: If the environment variable is not defined in the .env file.
+
+    :return: Path corresponding to the value of the specified environment variable.
+    :rtype: Path
     """
     load_dotenv()
     value = os.getenv(var_name)
@@ -20,9 +23,13 @@ def get_path(var_name: str) -> Path:
 
 def get_longitude() -> float:
     """
-    Fetches the longitude of the current position specified in the .env file.
+    Retrieve the longitude of the current position from the .env file and return it 
+    as a float rounded to 8 decimal places.
 
-    Raises a ValueError if it is not defined in the .env file.
+    :raises ValueError: If the LONGITUDE variable is not defined in the .env file.
+
+    :return: Longitude of the current position.
+    :rtype: float
     """
     load_dotenv() 
     longitude = os.getenv('LONGITUDE')
@@ -33,9 +40,13 @@ def get_longitude() -> float:
 
 def get_latitutde() -> float:
     """
-    Fetches the latitutde of the current position specified in the .env file.
+    Retrieve the latitude of the current position from the .env file and return it
+    as a float rounded to 8 decimal places.
 
-    Raises a ValueError if it is not defined in the .env file.
+    :raises ValueError: If the LATITUDE variable is not defined in the .env file.
+
+    :return: Latitude of the current position.
+    :rtype: float
     """
     load_dotenv()
     latitutde = os.getenv('LATITUDE')
@@ -46,9 +57,12 @@ def get_latitutde() -> float:
 
 def get_radius() -> int:
     """
-    Fetches the radius in meters from the current position specified in the .env file.
+    Retrieve the search radius in meters from the .env file and return it as an integer.
 
-    Raises a ValueError if it is not defined in the .env file.
+    :raises ValueError: If the RADIUS variable is not defined in the .env file.
+
+    :return: Search radius in meters.
+    :rtype: int
     """
     load_dotenv()
     radius = os.getenv('RADIUS')
@@ -59,9 +73,12 @@ def get_radius() -> int:
 
 def get_timeframe() -> int:
     """
-    Fetches the time in minutes for search of departures, specified in the .env file.
+    Retrieve the time frame for departure searches from the .env file and return it as a float.
 
-    Raises a ValueError if it is not defined in the .env file.
+    :raises ValueError: If the TIMEFRAME variable is not defined in the .env file.
+
+    :return: Time frame in minutes.
+    :rtype: int
     """
     load_dotenv()
     timeframe = os.getenv('TIMEFRAME')
