@@ -30,7 +30,7 @@ def get_longitude() -> float:
     if not longitude:
         raise ValueError('LONGITUDE is not set in the .env file.')
     
-    return longitude
+    return round(longitude, 8)
 
 def get_latitutde() -> float:
     """
@@ -43,7 +43,7 @@ def get_latitutde() -> float:
     if not latitutde:
         raise ValueError('LATITUDE is not set in the .env file.')
     
-    return latitutde
+    return round(latitutde, 8)
 
 def get_radius() -> int:
     """
