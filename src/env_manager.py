@@ -30,7 +30,7 @@ def get_longitude() -> float:
     if not longitude:
         raise ValueError('LONGITUDE is not set in the .env file.')
     
-    return round(longitude, 8)
+    return round(float(longitude), 8)
 
 def get_latitutde() -> float:
     """
@@ -43,7 +43,7 @@ def get_latitutde() -> float:
     if not latitutde:
         raise ValueError('LATITUDE is not set in the .env file.')
     
-    return round(latitutde, 8)
+    return round(float(latitutde), 8)
 
 def get_radius() -> int:
     """
@@ -56,7 +56,7 @@ def get_radius() -> int:
     if not radius:
         raise ValueError('RADIUS is not set in the .env file.')
     
-    return radius
+    return int(radius)
 
 def get_timeframe() -> int:
     """
@@ -69,4 +69,4 @@ def get_timeframe() -> int:
     if not timeframe:
         raise ValueError('TIMEFRAME is not set in the .env file.')
     
-    return timeframe
+    return int(timeframe)
