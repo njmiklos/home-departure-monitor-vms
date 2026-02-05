@@ -5,11 +5,18 @@ from env_manager import get_latitutde, get_longitude, get_radius, get_path, get_
 from file_handler import read_csv_to_dataframe
 
 
+# TODO make sure files are loaded once and cached, not loaded every time
+
+"""
+df = df.set_index('col_with_value_i_know')   # Col with known value to index
+i_want_this_value = df.at[value_i_know, 'col_with_val_i_want'] # Get known val from its column and check val in the same row in col
+"""
+
 class Connection:
     """
     Represents a single transport connection at a Stop instance.
     """
-    def __init__(self, trip_id, departure_time):
+    def __init__(self, trip_id):
         """
         Initialize a Connection instance and populate its ID, departure time, names and type of vehicle.
         The values are retrieved from routes.txt from the VMS's GTFS-compatible data, but since 
@@ -18,8 +25,9 @@ class Connection:
 
         :param trip_id: ID of the Connection instance, given by the Stop instance.
         :type trip_id: str
-        :param departure_time: Time of departure of the Connection instance, given by the Stop instance.
-        :type departure_time: str
+
+        :param route_id: ID of the route from trips.txt, based on trip_id.
+        :type route_id: str
 
         :param route_short_name: Short, abstract name of a route, e.g., "32", "100X", "Green".
         :type route_short_name: str
@@ -29,12 +37,21 @@ class Connection:
         :type vehicle: str
         """
         self.trip_id: str = trip_id
-        self.departure_time: str = departure_time
+
+        self.route_id: str = self.set_route_id()
 
         self.connection_id: str = self.set_connection_id()
         self.route_short_name: str = self.set_short_name()
         self.route_long_name: str = self.set_long_name()
         self.vehicle: str = self.set_vehicle()
+
+    def set_route_id(self) -> None:
+        input_dir = get_path('INPUT_PATH') 
+        input_file = input_dir / 'trips.txt'
+        df = read_csv_to_dataframe(input_file)
+
+        df = df.set_index('trip_id')
+        self.route_id = df.at[self.trip_id, 'route_id']
 
     def set_connection_id(self) -> None:
         pass
@@ -62,14 +79,18 @@ class Connection:
         }
         return mappings[route_type] if route_type in mappings else '???'
 
-    def set_vehicle(self, route_id: str):
+    def set_vehicle(self):
+        """
         input_dir = get_path('INPUT_PATH') 
         input_file = input_dir / 'routes.txt'
         df = read_csv_to_dataframe(input_file)
-        route_type_col = df["route_type"]
-        route_type = self.map_route_type(route_type_col.get(route_id, default='???'))
-        return route_type
 
+        df = df.set_index('route_id')
+        route_type_val = df.at[self.route_id, 'route_type']
+
+        return self.map_route_type(route_type_val)
+        """
+        pass
 
 class Stop:
     """
@@ -150,14 +171,11 @@ class Area:
 
         pass
 
-# TODO make sure files are loaded once and cached, not loaded every time
 
 if __name__ == '__main__':
+    # *.env set to the Haltestelle Schlossviertel
     '''
     area = Area()
-
-    latitude = get_latitutde()
-    longitude = get_longitude()
     assert area.latitude == latitude
     assert area.longitude == longitude
 
