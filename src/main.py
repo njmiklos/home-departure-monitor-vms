@@ -7,11 +7,6 @@ from file_handler import read_csv_to_dataframe
 
 # TODO make sure files are loaded once and cached, not loaded every time
 
-"""
-df = df.set_index('col_with_value_i_know')   # Col with known value to index
-i_want_this_value = df.at[value_i_know, 'col_with_val_i_want'] # Get known val from its column and check val in the same row in col
-"""
-
 class Connection:
     """
     Represents a single transport connection at a Stop instance.
@@ -40,27 +35,33 @@ class Connection:
 
         self.route_id: str = self.set_route_id()
 
-        self.connection_id: str = self.set_connection_id()
         self.route_short_name: str = self.set_short_name()
         self.route_long_name: str = self.set_long_name()
         self.vehicle: str = self.set_vehicle()
 
-    def set_route_id(self) -> None:
+    def set_route_id(self) -> str:
         input_dir = get_path('INPUT_PATH') 
         input_file = input_dir / 'trips.txt'
         df = read_csv_to_dataframe(input_file)
 
         df = df.set_index('trip_id')
-        self.route_id = df.at[self.trip_id, 'route_id']
+        return str(df.at[self.trip_id, 'route_id'])
 
-    def set_connection_id(self) -> None:
-        pass
+    def set_short_name(self) -> str:
+        input_dir = get_path('INPUT_PATH') 
+        input_file = input_dir / 'routes.txt'
+        df = read_csv_to_dataframe(input_file)
 
-    def set_short_name(self) -> None:
-        pass
+        df = df.set_index('route_id')
+        return str(df.at[self.route_id, 'route_short_name'])
 
-    def set_long_name(self) -> None:
-        pass
+    def set_long_name(self) -> str:
+        input_dir = get_path('INPUT_PATH') 
+        input_file = input_dir / 'routes.txt'
+        df = read_csv_to_dataframe(input_file)
+
+        df = df.set_index('route_id')
+        return str(df.at[self.route_id, 'route_long_name'])
 
     def map_route_type(self, route_type: str):
         """
@@ -79,18 +80,15 @@ class Connection:
         }
         return mappings[route_type] if route_type in mappings else '???'
 
-    def set_vehicle(self):
-        """
+    def set_vehicle(self) -> str:
         input_dir = get_path('INPUT_PATH') 
         input_file = input_dir / 'routes.txt'
         df = read_csv_to_dataframe(input_file)
 
         df = df.set_index('route_id')
-        route_type_val = df.at[self.route_id, 'route_type']
+        route_type = str(df.at[self.route_id, 'route_type'])
+        return self.map_route_type(route_type)
 
-        return self.map_route_type(route_type_val)
-        """
-        pass
 
 class Stop:
     """
