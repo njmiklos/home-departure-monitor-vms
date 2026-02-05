@@ -15,9 +15,8 @@ def disable_dotenv_loading(monkeypatch):
 
 # OK
 
-def test_get_path_ok(monkeypatch):
-    tmp_path = str('tmp_path')
-    monkeypatch.setenv('DATA_DIR', tmp_path)
+def test_get_path_ok(monkeypatch, tmp_path):
+    monkeypatch.setenv('DATA_DIR', Path(tmp_path))
     result = env_manager.get_path('DATA_DIR')
     assert result == Path(tmp_path)
     assert isinstance(result, Path)
