@@ -89,7 +89,6 @@ class Connection:
         route_type = str(df.at[self.route_id, 'route_type'])
         return self.map_route_type(route_type)
 
-
 class Stop:
     """
     Represents a single stop in a public transport in an Area instance.
@@ -171,12 +170,4 @@ class Area:
 
 
 if __name__ == '__main__':
-    # *.env set to the Haltestelle Schlossviertel
-    '''
-    area = Area()
-    assert area.latitude == latitude
-    assert area.longitude == longitude
-
-    radius = get_radius()
-    assert area.radius == radius
-    '''
+    pass
