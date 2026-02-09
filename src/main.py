@@ -5,8 +5,6 @@ from env_manager import get_latitutde, get_longitude, get_radius, get_path, get_
 from file_handler import read_csv_to_dataframe
 
 
-# TODO make sure files are loaded once and cached, not loaded every time
-
 class Connection:
     """
     Represents a single transport connection at a Stop instance.
@@ -18,7 +16,8 @@ class Connection:
         there is no direct connection between stop_times.txt and routes.txt,
         the file trips.txt is leveraged as a connection between them.
 
-        :param trip_id: ID of the Connection instance, given by the Stop instance.
+        :param trip_id: ID of the Connection instance, given by the Stop instance. trip_id must exist in trips.txt 
+            and its route_id must exist in routes.txt. Otherwise: raise KeyError (from pandas).
         :type trip_id: str
 
         :param route_id: ID of the route from trips.txt, based on trip_id.
@@ -33,43 +32,41 @@ class Connection:
         """
         self.trip_id: str = trip_id
 
-        self.route_id: str = self.set_route_id()
+        self._trips_df = self.load_trips_df()
+        self.route_id: str = self.get_route_id()
 
-        self.route_short_name: str = self.set_short_name()
-        self.route_long_name: str = self.set_long_name()
-        self.vehicle: str = self.set_vehicle()
+        self._routes_df: pd.DataFrame = self.load_routes_df()
+        self.route_short_name: str = self.get_short_name()
+        self.route_long_name: str = self.get_long_name()
+        self.vehicle: str = self.get_vehicle_type()
 
-    def set_route_id(self) -> str:
+    def load_trips_df(self) -> pd.DataFrame:
         input_dir = get_path('INPUT_PATH') 
         input_file = input_dir / 'trips.txt'
         df = read_csv_to_dataframe(input_file)
+        return df.set_index('trip_id')
 
-        df = df.set_index('trip_id')
-        return str(df.at[self.trip_id, 'route_id'])
+    def get_route_id(self) -> str:
+        return str(self._trips_df.at[self.trip_id, 'route_id'])
 
-    def set_short_name(self) -> str:
+    def load_routes_df(self) -> pd.DataFrame:
         input_dir = get_path('INPUT_PATH') 
         input_file = input_dir / 'routes.txt'
         df = read_csv_to_dataframe(input_file)
+        return df.set_index('route_id')
 
-        df = df.set_index('route_id')
-        return str(df.at[self.route_id, 'route_short_name'])
+    def get_short_name(self) -> str:
+        return str(self._routes_df.at[self.route_id, 'route_short_name'])
 
-    def set_long_name(self) -> str:
-        input_dir = get_path('INPUT_PATH') 
-        input_file = input_dir / 'routes.txt'
-        df = read_csv_to_dataframe(input_file)
+    def get_long_name(self) -> str:
+        return str(self._routes_df.at[self.route_id, 'route_long_name'])
 
-        df = df.set_index('route_id')
-        return str(df.at[self.route_id, 'route_long_name'])
-
-    def map_route_type(self, route_type: str):
+    def map_route_type(self, route_type: str) -> str:
         """
         Return type of vehicle (e.g., bus, tram) available in the area, based on `route_type` code.
         More types: https://gtfs.org/documentation/schedule/reference/#routestxt 
         
-        :param self: Description
-        :param route_type: Description
+        :param route_type: Type of vehicle (e.g., bus, tram) mapped based on `route_type` code.
         :type route_type: str
         """
         mappings = {
@@ -80,14 +77,10 @@ class Connection:
         }
         return mappings[route_type] if route_type in mappings else '???'
 
-    def set_vehicle(self) -> str:
-        input_dir = get_path('INPUT_PATH') 
-        input_file = input_dir / 'routes.txt'
-        df = read_csv_to_dataframe(input_file)
-
-        df = df.set_index('route_id')
-        route_type = str(df.at[self.route_id, 'route_type'])
-        return self.map_route_type(route_type)
+    def get_vehicle_type(self) -> str:
+        route_type = str(self._routes_df.at[self.route_id, 'route_type'])
+        mapped_route_type = self.map_route_type(route_type)
+        return mapped_route_type
 
 class Stop:
     """
